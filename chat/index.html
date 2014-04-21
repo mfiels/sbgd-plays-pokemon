@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <style>
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ecf0f1;
+      }
+
+      h1 {
+        color: white;
+        background: #2980b9;
+        text-align: center;
+        margin: 0;
+        text-transform: uppercase;
+        font-family: sans-serif;
+        border-bottom: 1px solid #bdc3c7;
+      }
+
+      #messages {
+        position: fixed;
+        left: 0;
+        right: 0;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #messages li {
+        width: 100%;
+        border-bottom: 1px solid #bdc3c7;
+        margin: 0;
+        text-transform: uppercase;
+        font-family: sans-serif;
+        padding: 5px;
+        padding-left: 25px;
+      }
+
+      #submission {
+        position: fixed;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        background: #2980b9;
+        text-align: center;
+        padding: 10px;
+      }
+
+      #submission #message {
+        width: 50%;
+        border: none;
+        padding: 5px;
+        text-transform: uppercase;
+        font-family: sans-serif;
+      }
+
+      #submission #send {
+        border: none;
+        padding: 5px;
+        color: white;
+        background: #2ecc71;
+        text-transform: uppercase;
+        font-family: sans-serif;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>sbgd</h1>
+    <ul id="messages">
+    </ul>
+    <div id="submission">
+      <input id="message" type="text" />
+      <input id="send" type="submit" value="send" />
+    </div>
+
+    <script>
+      var MAX_DISPLAYED_MESSAGES = 30;
+      var host = window.location.origin;
+      var socket = io.connect(host);
+
+      function addMessage(message) {
+        var li = $('<li/>');
+        li.text(message);
+        $('#messages').prepend(li);
+        if ($('#messages').children().length > MAX_DISPLAYED_MESSAGES) {
+          $('#messages').children().last().remove();
+        }
+      }
+
+      function sendMessage() {
+        var message = $('#message').val();
+        if (message.trim().length == 0) {
+          return false;
+        }
+        socket.emit('message', message);
+        $('#message').val('');
+        $('#message').focus();
+        addMessage(message);
+        return false;
+      }
+
+      $('#send').click(sendMessage);
+      $('#message').keypress(function(e) {
+        if (e.which == 13) {
+          return sendMessage();
+        }
+      });
+
+      socket.on('message', addMessage);
+    </script>
+  </body>
+</html>

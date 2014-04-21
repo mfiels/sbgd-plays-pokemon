@@ -1,0 +1,11 @@
+{
+  "name": "sbgd-pokemon",
+  "version": "0.0.1",
+  "description": "SBGD playing pokemon.",
+  "dependencies": {
+    "socket.io": "0.9.*"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
